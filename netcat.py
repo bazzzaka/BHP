@@ -46,15 +46,49 @@ class NetCat:
             sys.exit()
 
     def listen(self):
-        self.socket.bind((self.args.target, self.args.port))
+        self.socket.bind((self.args.target, self.args.port))  # привязка к адресу и порту
         self.socket.listen(5)
-        while True:
+        while True:  # начало прослушивания в цикле
             client_socket, _ = self.socket.accept()
-            client_thread = threading.Thread(
+            client_thread = threading.Thread(  # передача подключившихся сокетов методу handle
                 target=self.handle,
                 args=(client_socket,)
             )
             client_thread.start()
+
+    def handle(self, client_socket):
+        if self.args.execute:  # если нужно выполнить команду
+            output = execute(self.args.execute)
+            client_socket.send(output.encode())  # шлет вывод обратно в сокет
+
+        elif self.args.upload:  # если нужно загрузить файл мы входим в цикл
+            file_buffer = b''   # чтобы получать данные из прослушивающего сокета
+            while True:         # до тех пор, пока они не перестанут поступать
+                data = client_socket.recv(4096)
+                if data:
+                    file_buffer += data
+                else:
+                    break
+            with open(self.args.upload, 'wb') as f:  # затем записываем содержимое
+                f.write(file_buffer)                 # в заданный файл
+                message = f'Saved file {self.args.upload}'
+                client_socket.send(message.encode())
+
+        elif self.args.commad:  # если нужно создать командную оболочку
+            cmd_buffer = b''
+            while True:
+                try:
+                    client_socket.send(b'BHP: #>')  # передаем отправителю приглашение командной строки
+                    while '\n' not in cmd_buffer.decode():  # ждем в ответ строку с командой
+                        cmd_buffer += client_socket.recv(64)
+                    response = execute(cmd_buffer.decode())  # выполняем полученную команду
+                    if response:
+                         client_socket.send(response.encode())  # возвращаем вывод отправителю
+                    cmd_buffer = b''
+                except Exception as e:
+                    print(f'server killed {e}')
+                    self.socket.close()
+                    sys.exit()
 
               
 def execute(cmd):
