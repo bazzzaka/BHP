@@ -126,7 +126,8 @@ if __name__ == '__main__':
     parser.add_argument(
         '-c',
         '--command',
-        action='command shell'
+        action='store_true',
+        help='command shell'
     )
     parser.add_argument(
         '-e',
