@@ -74,7 +74,7 @@ class NetCat:
                 message = f'Saved file {self.args.upload}'
                 client_socket.send(message.encode())
 
-        elif self.args.commad:  # если нужно создать командную оболочку
+        elif self.args.command:  # если нужно создать командную оболочку
             cmd_buffer = b''
             while True:
                 try:
