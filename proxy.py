@@ -4,7 +4,7 @@ import threading
 
 
 HEX_FILTER = ''.join(  # строка с печатными символами ASCII если символ не печатный
-    [len(repr(chr(i)) == 3) and chr(i) or '.' for i in range(256)]  # выводится точка (.)
+    [(len(repr(chr(i))) == 3) and chr(i) or '.' for i in range(256)]  # выводится точка (.)
 )
 
 
