@@ -114,10 +114,10 @@ if __name__ == '__main__':
         # |-t| задает IP адрес
         # |-u| определяет имя файла который нужно загрузить
         epilog=textwrap.dedent('''Example:
-        netcat.py -t 192.168.1.108 -p 5555 -1 -c #командная оболочка
-        netcat.py -t 192.168.1.108 -p 5555 -1 -u=mytest.txt 
+        netcat.py -t 192.168.1.108 -p 5555 -l -c #командная оболочка
+        netcat.py -t 192.168.1.108 -p 5555 -l -u=mytest.txt 
         # загружаем файл
-        netcat.py -t 192.168.1.108 -p 5555 -1 -e=\"cat /etc/passwd\"
+        netcat.py -t 192.168.1.108 -p 5555 -l -e=\"cat /etc/passwd\"
         # выполняем команду 
         echo 'ABC' | ./netcat.py -t 192.168.1.108 -p 135
         # шлем текст на порт сервера 135
